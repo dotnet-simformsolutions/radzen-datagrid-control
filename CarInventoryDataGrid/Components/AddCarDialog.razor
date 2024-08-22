@@ -1,0 +1,111 @@
+﻿@page "/addcar"
+
+@using CarInventoryDataGrid.Domain;
+@using CarInventoryDataGrid.Services;
+
+@inject ICarService CarService
+@inject Radzen.DialogService DialogService
+
+<EditForm Model="@Car" Class="form-container">
+    <DataAnnotationsValidator />
+    <ValidationSummary Class="validation-summary" />
+
+    <div class="form-group">
+        <label for="make" class="form-label">Make:</label>
+        <InputText id="make" @bind-Value="Car.Make" Class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="model" class="form-label">Model:</label>
+        <InputText id="model" @bind-Value="Car.Model" Class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="year" class="form-label">Year:</label>
+        <InputNumber id="year" @bind-Value="Car.Year" Class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="price" class="form-label">Price:</label>
+        <InputNumber id="price" @bind-Value="Car.Price" Class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="engine" class="form-label">Engine:</label>
+        <InputText id="engine" @bind-Value="Car.Engine" Class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="color" class="form-label">Color:</label>
+        <InputText id="color" @bind-Value="Car.Color" Class="form-control" />
+    </div>
+
+    <div class="button-group">
+        <RadzenButton ButtonType="ButtonType.Submit" Text="Create" Class="button-primary" Click="AddNewCar" />
+        <RadzenButton ButtonType="ButtonType.Button" Text="Close" Class="button-secondary" Click="CloseDialog" />
+    </div>
+</EditForm>
+
+@code {
+    public CarEntity Car { get; set; } = new CarEntity();
+
+    private async Task AddNewCar()
+    {
+        await CarService.CreateCarAsync(Car);
+        DialogService.Close(true);
+    }
+
+    private void CloseDialog()
+    {
+        DialogService.Close(false);
+    }
+}
+
+<style>
+    .form-container {
+        max-width: 500px;
+        margin: auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .button-primary {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .button-secondary {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .validation-summary {
+        margin-bottom: 15px;
+        color: red;
+    }
+</style>

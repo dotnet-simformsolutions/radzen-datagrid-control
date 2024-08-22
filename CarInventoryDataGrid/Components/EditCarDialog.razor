@@ -1,0 +1,79 @@
+﻿@page "/editcar"
+
+@using CarInventoryDataGrid.Domain;
+@using CarInventoryDataGrid.Services;
+
+@inject ICarService CarService
+@inject Radzen.DialogService DialogService
+
+<RadzenTemplateForm Data="@Car" TItem="CarEntity" Submit="SaveCar">
+    <ChildContent>
+        <RadzenFieldset Text="Edit Car Details">
+            <RadzenRow>
+                <RadzenColumn>
+                    <RadzenLabel Text="Make" />
+                    <RadzenTextBox id="make" @bind-Value="Car.Make" />
+                </RadzenColumn>
+
+                <RadzenColumn>
+                    <RadzenLabel Text="Model" />
+                    <RadzenTextBox id="model" @bind-Value="Car.Model" />
+                </RadzenColumn>
+            </RadzenRow>
+
+            <RadzenRow>
+                <RadzenColumn>
+                    <RadzenLabel Text="Year" />
+                    <RadzenNumeric id="year" @bind-Value="Car.Year" Min="1886" Max="2024" />
+                </RadzenColumn>
+
+                <RadzenColumn>
+                    <RadzenLabel Text="Price" />
+                    <RadzenNumeric id="price" @bind-Value="Car.Price" Min="0" />
+                </RadzenColumn>
+            </RadzenRow>
+
+            <RadzenRow>
+                <RadzenColumn>
+                    <RadzenLabel Text="Engine" />
+                    <RadzenTextBox id="engine" @bind-Value="Car.Engine" />
+                </RadzenColumn>
+
+                <RadzenColumn>
+                    <RadzenLabel Text="Color" />
+                    <RadzenTextBox id="color" @bind-Value="Car.Color" />
+                </RadzenColumn>
+            </RadzenRow>
+
+            <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Style="margin-top: 20px;">Save</RadzenButton>
+            <RadzenButton ButtonType="ButtonType.Button" Icon="close" Click="CloseDialog" Style="margin-top: 20px; margin-left: 10px;">Cancel</RadzenButton>
+        </RadzenFieldset>
+    </ChildContent>
+</RadzenTemplateForm>
+
+@code {
+    [Parameter] public CarEntity? Car { get; set; }
+    [Parameter] public EventCallback OnSave { get; set; }
+
+    private async Task SaveCar()
+    {
+        if (Car != null)
+        {
+            try
+            {
+                await CarService.UpdateCarAsync(Car);
+                DialogService.Close(true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Something unexpected happened: " + ex.Message);
+                DialogService.Close(false);
+            }
+        }
+    }
+
+    private void CloseDialog()
+    {
+        DialogService.Close(false);
+    }
+}
